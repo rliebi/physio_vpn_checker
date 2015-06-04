@@ -23,7 +23,7 @@ def main():
             if not all_down:
                 pusher.push('trying to restart the l2tp service',
                             '{} Connections are down!({})'.format(len(down_connections),
-                                                                  (','.join(dc.name) for dc in down_connections)),
+                                                                  ', '.join([i.name for i in down_connections])),
                             2)
                 restart_ipsec()
 
