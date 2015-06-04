@@ -5,9 +5,6 @@ from settings import CHECK_INTERVAL
 
 
 def main():
-
-
-
     __author__ = 'remoliebi'
 
     import time
@@ -22,9 +19,12 @@ def main():
                 down_connections.append(l)
             print l.get_connection_phrase()
 
-        if len(down_connections) == len(locations):
+        if len(down_connections) >= 2:
             if not all_down:
-                pusher.push('ALL Connections are down!', 'trying to restart the l2tp service', 2)
+                pusher.push('trying to restart the l2tp service',
+                            '{} Connections are down!({})'.format(len(down_connections),
+                                                                  (','.join(dc.name) for dc in down_connections)),
+                            2)
                 restart_ipsec()
 
             if all_down:
