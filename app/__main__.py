@@ -25,6 +25,7 @@ def main():
                             '{} Connections are down!({})'.format(len(down_connections),
                                                                   ', '.join([i.name for i in down_connections])),
                             2)
+                ipsec_status()
                 restart_ipsec()
 
             if all_down:
