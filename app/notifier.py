@@ -1,7 +1,8 @@
 import smtplib
+
 import pyrowl
 from settings import PROWL_NOTIFY_API_KEYS, SMTP_HOST, SMTP_PASS, SMTP_USER
-from smtp_fix import PlainSmtpSSL
+
 
 __author__ = 'remoliebi'
 
@@ -38,4 +39,6 @@ class Notifier:
         except smtplib.SMTPException:
             raise
             print "Error: unable to send email"
+
+
 pusher = Notifier()
