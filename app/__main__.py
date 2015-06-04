@@ -12,8 +12,8 @@ def main():
 
     import time
 
-    locations = [Location('basel', '192.168.81.1'), Location('stgallen', '192.168.129.1'),
-                 Location('wetzikon', '172.16.6.1'), Location('test', '192.168.66.54')]
+    locations = [Location('Basel', '192.168.81.1'), Location('St.Gallen', '192.168.129.1'),
+                 Location('Wetzikon', '172.16.6.1'), Location('Server', '192.168.70.5')]
     all_down = False
     while True:
         down_connections = []
@@ -36,7 +36,7 @@ def main():
             pusher.push('Back to normal.',
                         ','.join([i.get_connection_phrase() for i in locations]))
 
-        time.sleep(CHECK_INTERVAL)  # sleep 10 seconds
+        time.sleep(CHECK_INTERVAL)
 
 
 if __name__ == '__main__':

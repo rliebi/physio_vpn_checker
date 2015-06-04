@@ -9,9 +9,11 @@ __author__ = 'remoliebi'
 def restart_ipsec():
     command = ['/usr/sbin/service', 'ipsec', 'restart']
     # shell=FALSE for sudo to work.
-    subprocess.call(command, shell=False)
-    time.sleep(PAUSE_WHEN_RESTARTING_L2TP)
-
+    try:
+        subprocess.call(command, shell=False)
+        time.sleep(PAUSE_WHEN_RESTARTING_L2TP)
+    except OSError, e:
+        pusher.push("failed to restart ipsec service", e)
 
 def ipsec_status():
     p = subprocess.Popen(['program', 'arg1'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
