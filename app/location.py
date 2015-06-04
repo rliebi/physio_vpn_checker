@@ -1,5 +1,5 @@
-from physio_vpn_checker import pusher
-from physio_vpn_checker.measurement import restart_ipsec
+from measurement import restart_ipsec
+from notifier import pusher
 
 __author__ = 'remoliebi'
 import os
