@@ -18,7 +18,7 @@ class Location:
         # test the connection. use network manager in near future
         self.connected = os.system('fping -c 1 -t 500 %s' % self.ip) == 0
         if self.connected:
-            if self.timeout_counter > 0:
+            if self.timeout_counter > 2:
                 pusher.push("{} is up and running".format(self.name), 'All back to normal')
                 self.timeout_counter = 0
             return True

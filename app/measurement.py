@@ -1,5 +1,6 @@
 import subprocess
 import time
+import pickle
 from notifier import pusher
 from settings import PAUSE_WHEN_RESTARTING_L2TP
 
@@ -12,8 +13,8 @@ def restart_ipsec():
     try:
         subprocess.call(command, shell=False)
         time.sleep(PAUSE_WHEN_RESTARTING_L2TP)
-    except OSError, e:
-        pusher.push("failed to restart ipsec service", e)
+    except OSError as e:
+        pusher.push("failed to restart ipsec service", str(e))
 
 
 def ipsec_status():
