@@ -1,11 +1,11 @@
+# -*- coding: UTF-8 -*-
+
 import re
 import subprocess
 import time
 
 from location import Location
-
 from measurement import ipsec_status, restart_ipsec
-
 from notifier import pusher
 from settings import PROWL_NOTIFY_API_KEYS, CHECK_INTERVAL
 
@@ -34,10 +34,10 @@ def main():
     __author__ = 'remoliebi'
     status_regex = re.compile("(\d+\.\d+\.\d+\.\d+).*?(alive|unreachable)")
     locations = [
-        Location('Basel', '192.168.81.1'),
-        Location('St.Gallen', '192.168.129.1'),
-        Location('Wetzikon', '172.16.6.1'),
-        Location('Server', '192.168.70.5')
+        Location('Basel', '192.168.81.1', 'basel@physio-zentrum.ch'),
+        Location('St.Gallen', '192.168.129.1', 'stgallen@physio-zentrum.ch'),
+        Location('Wetzikon', '172.16.6.1', 'wetzikon@physio-zentrum.ch'),
+        Location('Server', '192.168.70.5', 'remo@liebi.net')
     ]
     restarted = False
     downtime_counter = 0
@@ -58,11 +58,28 @@ def main():
             downtime_counter += 1
 
             if not restarted and downtime_counter == 4:
-                pusher.push('trying to restart the l2tp service',
+                message = """ Hallo. <p>Es gab ein Problem mit den Verbindungen mit mehreren Standorten</p>
+                <p>({down})</p>
+                Der Server wird nun automatisch neu gestartet.
+                Dies kann dazu führen, dass Simed kurzzeitig unterbrochen wird.
+
+                Sorry für die umstände.<br/><br/>
+                Lieber Gruss
+                Remo
+                <br/><br/><br/>
+                ===<br/>
+                {locations}
+                """.format(locations='<br/>'.join([i.get_connection_phrase() for i in locations]),
+                           down=','.join([i.name for i in down_connections]))
+
+                pusher.send_mail(locations, "Neustart", message)
+                pusher.push('trying to restart the l2tp service in 60 seconds',
                             '{} Connections are down!({})'.format(len(down_connections),
                                                                   ', '.join([i.name for i in down_connections])),
                             2)
+
                 ipsec_status()
+                time.sleep(60)
                 restart_ipsec()
                 restarted = True
 
