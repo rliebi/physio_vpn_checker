@@ -36,7 +36,7 @@ def main():
         Location('Basel', '192.168.81.1'),
         Location('Basel_TEST', '192.168.81.2'),
         Location('Basel_TEST1', '192.168.81.3'),
-        Location('Basel_TEST2', '192.168.81.4'),
+        Location('Basel_TEST2', '192.168.81.1'),
         Location('St.Gallen', '192.168.129.1'),
         Location('Wetzikon', '172.16.6.1'),
         Location('Server', '192.168.70.5')
@@ -47,6 +47,9 @@ def main():
         down_connections = []
         result = status_regex.findall(check_all_locations(locations))
         for i in range(len(result)):
+            ip = result[i][1]
+            reply = result[i][0]
+            print i, result[i], locations[i].ip, locations[i].name
             if result[i][1] == 'unreachable':
                 down_connections.append(locations[i])
                 locations[i].check_location(False)
