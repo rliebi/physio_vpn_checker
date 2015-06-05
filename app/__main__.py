@@ -1,7 +1,12 @@
+import re
+import subprocess
+import time
+
 from location import Location
-from measurement import restart_ipsec, ipsec_status
+
+from measurement import ipsec_status, restart_ipsec
 from notifier import pusher
-from settings import CHECK_INTERVAL, PROWL_NOTIFY_API_KEYS
+from settings import PROWL_NOTIFY_API_KEYS, CHECK_INTERVAL
 
 
 def check_settings():
@@ -12,22 +17,44 @@ def check_settings():
         print e.message
 
 
+def check_all_locations(locations):
+    try:
+        ips = [l.ip for l in locations]
+        p = subprocess.Popen(['fping'] + ips, stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        output, err = p.communicate(b"input data that is passed to subprocess' stdin")
+        return output
+    except OSError as e:
+        pusher.push('Check All Locations', str(e))
+
+
 def main():
     __author__ = 'remoliebi'
-
-    import time
-
-    locations = [Location('Basel', '192.168.81.1'), Location('St.Gallen', '192.168.129.1'),
-                 Location('Wetzikon', '172.16.6.1'), Location('Server', '192.168.70.5')]
+    status_regex = re.compile("(\d+\.\d+\.\d+\.\d+).*?(alive|unreachable)")
+    locations = [
+        Location('Basel', '192.168.81.1'),
+        Location('Basel_TEST', '192.168.81.2'),
+        Location('Basel_TEST1', '192.168.81.3'),
+        Location('Basel_TEST2', '192.168.81.4'),
+        Location('St.Gallen', '192.168.129.1'),
+        Location('Wetzikon', '172.16.6.1'),
+        Location('Server', '192.168.70.5')
+    ]
     restarted = False
     downtime_counter = 0
     while True:
         down_connections = []
-        for l in locations:
-            if not l.check_connection():
-                down_connections.append(l)
+        result = status_regex.findall(check_all_locations(locations))
+        for i in range(len(result)):
+            if result[i][1] == 'unreachable':
+                down_connections.append(locations[i])
+                locations[i].check_location(False)
+            else:
+                locations[i].check_location(True)
+            pusher.log(locations[i].get_connection_phrase())
 
-        if len(down_connections) >= 2:
+        if len(down_connections) >= 3:
             downtime_counter += 1
 
             if not restarted and downtime_counter == 4:
@@ -37,16 +64,16 @@ def main():
                             2)
                 ipsec_status()
                 restart_ipsec()
+                restarted = True
 
-            if restarted:
+            if restarted and downtime_counter % 6 == 0:
                 ipsec_status()
-            restarted = True
 
         elif restarted:
             restarted = False
-            pusher.push('Back to normal.',
+            pusher.push('IPSec seems to be running again.',
                         ','.join([i.get_connection_phrase() for i in locations]))
-
+            downtime_counter = 0
         time.sleep(CHECK_INTERVAL)
 
 

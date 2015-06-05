@@ -1,7 +1,9 @@
 import subprocess
 import time
+
 from notifier import pusher
 from settings import PAUSE_WHEN_RESTARTING_L2TP, DEBUG
+
 
 __author__ = 'remoliebi'
 
@@ -22,7 +24,8 @@ def restart_ipsec():
 
 def ipsec_status():
     try:
-        p = subprocess.Popen(['program', 'arg1'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(['/usr/sbin/service', 'ipsec', 'status'], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
         output, err = p.communicate(b"input data that is passed to subprocess' stdin")
     except OSError as e:
         output = str(e)
