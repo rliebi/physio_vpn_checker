@@ -44,6 +44,7 @@ class Location:
         self.is_connected = False
         self.stability_index -= 1 if self.stability_index >= 0 else 0
         self.timeout_counter += 1
+        pusher.log(self.get_connection_phrase())
         if self.timeout_counter % settings.SEND_NOTIFICATION_EVERY == 0 \
                 and self.timeout_counter >= settings.SEND_NOTIFICATION_AFTER:
             pusher.push('{} not connected'.format(self.name),

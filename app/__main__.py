@@ -53,7 +53,6 @@ def main():
                 location.check_location(False)
             else:
                 location.check_location(True)
-            pusher.log(location.get_connection_phrase())
 
         if len(down_connections) >= 3:
             downtime_counter += 1
