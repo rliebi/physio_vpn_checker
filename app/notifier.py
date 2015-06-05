@@ -1,4 +1,5 @@
 import smtplib
+import datetime
 
 import pyrowl
 from settings import PROWL_NOTIFY_API_KEYS, SMTP_HOST, SMTP_PASS, SMTP_USER
@@ -12,10 +13,12 @@ class Notifier:
         self.p = pyrowl.Pyrowl(PROWL_NOTIFY_API_KEYS)
         self.smtpObj = smtplib.SMTP_SSL(SMTP_HOST, 465)
 
-
     def push(self, event, description, priority=0, url=''):
-        print 'sending notification'
-        print self.p.push("PHYSIOZENTRUM", event, description, url, priority)
+        self.p.push("PHYSIOZENTRUM", event, description, url, priority)
+        self.log('{} - {}'.format(event, description))
+
+    def log(self, output):
+        print '{time} - {log}'.format(time=datetime.datetime.now(), log=output)
 
     def send_mail(self, location, event, description, url):
         location_mail = location + '@physio-zentrum.ch'

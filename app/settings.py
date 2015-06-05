@@ -12,13 +12,13 @@ def get_multiple_env_args(name):
         yield key
 
 CHECK_INTERVAL = 10  # in seconds
-PAUSE_WHEN_RESTARTING_L2TP = 30  # in seconds
-SEND_NOTIFICATION_AFTER = 2  # in retries
+PAUSE_WHEN_RESTARTING_L2TP = 20  # in seconds
+SEND_NOTIFICATION_AFTER = 5  # in retries
 SEND_NOTIFICATION_EVERY = 10  # in retries
 NOTIFY_LOCATION_AFTER = 10  # in retries
 RESTART_L2TP_AFTER = 30  # if a single location fails, i will restart the l2tp server after xx retries
 PROWL_NOTIFY_API_KEYS = [value for value in get_multiple_env_args('PROWL_API_KEY')]
-print PROWL_NOTIFY_API_KEYS
+print 'API KEYS', PROWL_NOTIFY_API_KEYS
 SMTP_PASS = os.environ.get('SMTP_PASS')
 SMTP_HOST = 'plesk.liebi.net'
 SMTP_USER = 'noreply@lnh.ch'

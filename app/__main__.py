@@ -1,7 +1,14 @@
 from location import Location
 from measurement import restart_ipsec, ipsec_status
 from notifier import pusher
-from settings import CHECK_INTERVAL
+from settings import CHECK_INTERVAL, PROWL_NOTIFY_API_KEYS
+
+
+def check_settings():
+    try:
+        assert len(PROWL_NOTIFY_API_KEYS) > 0, "NO PROWL_NOTIFY_API_KEYS is set."
+    except AssertionError as e:
+        print e.message
 
 
 def main():
@@ -17,7 +24,6 @@ def main():
         for l in locations:
             if not l.check_connection():
                 down_connections.append(l)
-            print l.get_connection_phrase()
 
         if len(down_connections) >= 2:
             if not all_down:
@@ -41,4 +47,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    if check_settings():
+        main()
+    else:
+        print 'failed loading settings. please check your vpn_checker.conf' \
+              ' and settings.py or that the env variables are set correctly!'
