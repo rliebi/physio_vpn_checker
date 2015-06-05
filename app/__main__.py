@@ -7,6 +7,7 @@ from settings import CHECK_INTERVAL, PROWL_NOTIFY_API_KEYS
 def check_settings():
     try:
         assert len(PROWL_NOTIFY_API_KEYS) > 0, "NO PROWL_NOTIFY_API_KEYS is set."
+        return True
     except AssertionError as e:
         print e.message
 
