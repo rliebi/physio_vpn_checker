@@ -35,9 +35,6 @@ def main():
     status_regex = re.compile("(\d+\.\d+\.\d+\.\d+).*?(alive|unreachable)")
     locations = [
         Location('Basel', '192.168.81.1'),
-        Location('Basel_TEST', '192.168.81.2'),
-        Location('Basel_TEST1', '192.168.81.3'),
-        Location('Basel_TEST2', '192.168.81.1'),
         Location('St.Gallen', '192.168.129.1'),
         Location('Wetzikon', '172.16.6.1'),
         Location('Server', '192.168.70.5')
