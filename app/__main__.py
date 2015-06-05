@@ -1,3 +1,4 @@
+import pprint
 import re
 import subprocess
 import time
@@ -46,13 +47,15 @@ def main():
     while True:
         down_connections = []
         result = status_regex.findall(check_all_locations(locations))
+        pprint.pprint(result)
         for i in range(len(result)):
             ip = result[i][1]
             reply = result[i][0]
             print i, result[i], locations[i].ip, locations[i].name
             if result[i][1] == 'unreachable':
                 down_connections.append(locations[i])
-                locations[i].check_location(False)
+                locations[i]\
+                    .check_location(False)
             else:
                 locations[i].check_location(True)
             pusher.log(locations[i].get_connection_phrase())
