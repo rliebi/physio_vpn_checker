@@ -19,7 +19,8 @@ def main():
 
     locations = [Location('Basel', '192.168.81.1'), Location('St.Gallen', '192.168.129.1'),
                  Location('Wetzikon', '172.16.6.1'), Location('Server', '192.168.70.5')]
-    all_down = False
+    restarted = False
+    downtime_counter = 0
     while True:
         down_connections = []
         for l in locations:
@@ -27,7 +28,9 @@ def main():
                 down_connections.append(l)
 
         if len(down_connections) >= 2:
-            if not all_down:
+            downtime_counter += 1
+
+            if not restarted and downtime_counter == 4:
                 pusher.push('trying to restart the l2tp service',
                             '{} Connections are down!({})'.format(len(down_connections),
                                                                   ', '.join([i.name for i in down_connections])),
@@ -35,12 +38,12 @@ def main():
                 ipsec_status()
                 restart_ipsec()
 
-            if all_down:
+            if restarted:
                 ipsec_status()
-            all_down = True
+            restarted = True
 
-        elif all_down:
-            all_down = False
+        elif restarted:
+            restarted = False
             pusher.push('Back to normal.',
                         ','.join([i.get_connection_phrase() for i in locations]))
 
