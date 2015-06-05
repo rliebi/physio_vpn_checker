@@ -1,4 +1,3 @@
-import pprint
 import re
 import subprocess
 import time
@@ -6,6 +5,7 @@ import time
 from location import Location
 
 from measurement import ipsec_status, restart_ipsec
+
 from notifier import pusher
 from settings import PROWL_NOTIFY_API_KEYS, CHECK_INTERVAL
 
@@ -47,18 +47,16 @@ def main():
     while True:
         down_connections = []
         result = status_regex.findall(check_all_locations(locations))
-        pprint.pprint(result)
         for i in range(len(result)):
-            ip = result[i][1]
-            reply = result[i][0]
-            print i, result[i], locations[i].ip, locations[i].name
-            if result[i][1] == 'unreachable':
-                down_connections.append(locations[i])
-                locations[i]\
-                    .check_location(False)
+            ip = result[i][0]
+            reply = result[i][1]
+            location = (item for item in locations if item.ip == ip).next()
+            if reply == 'unreachable':
+                down_connections.append(location)
+                location.check_location(False)
             else:
-                locations[i].check_location(True)
-            pusher.log(locations[i].get_connection_phrase())
+                location.check_location(True)
+            pusher.log(location.get_connection_phrase())
 
         if len(down_connections) >= 3:
             downtime_counter += 1
