@@ -98,6 +98,7 @@ if __name__ == '__main__':
 
     if len(sys.argv) == 1:
         if check_settings():
+            print 'starting script'
             main()
         else:
             print 'failed loading settings. please check your vpn_checker.conf' \
@@ -110,3 +111,4 @@ if __name__ == '__main__':
             if arg == 'testmail':
                 l = Location('testlocation', '', 'remo@liebi.net')
                 pusher.send_mail(l, 'TestMail', 'TestMail')
+                print 'TestMail sent.'
