@@ -32,7 +32,6 @@ def check_all_locations(locations):
 
 
 def main():
-    __author__ = 'remoliebi'
     status_regex = re.compile("(\d+\.\d+\.\d+\.\d+).*?(alive|unreachable)")
     locations = [
         Location('Basel', '192.168.81.1', 'basel@physio-zentrum.ch'),

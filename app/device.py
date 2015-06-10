@@ -36,5 +36,3 @@ class Device:
             return True
         except:
             return False
-d = Device('admin', 'admin', 'http://localhost:2000')
-d.check()
