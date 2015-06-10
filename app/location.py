@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+from device import Device
 from measurement import restart_ipsec
 from notifier import pusher
 
@@ -8,9 +9,10 @@ import settings
 
 
 class Location:
-    def __init__(self, name, ip, email=None):
+    def __init__(self, name, ip, email=None, password='admin', username='admin'):
         self.name = name
         self.ip = ip
+        self.device = Device(username, password, ip)
         self.timeout_counter = 0
         self.stability_index = 100
         self.is_connected = False
@@ -61,6 +63,9 @@ class Location:
                                 </p>
                         """.format(index=self.stability_index, team=self.name))
 
+    def restart_router(self):
+        pusher.push()
+        self.device.reboot()
 
     def connected(self):
         self.is_connected = True

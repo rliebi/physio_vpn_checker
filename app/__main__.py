@@ -3,6 +3,7 @@
 import re
 import subprocess
 import time
+import sys
 
 from location import Location
 from measurement import ipsec_status, restart_ipsec
@@ -95,8 +96,18 @@ def main():
 
 
 if __name__ == '__main__':
-    if check_settings():
-        main()
+
+    if len(sys.argv) == 1:
+        if check_settings():
+            main()
+        else:
+            print 'failed loading settings. please check your vpn_checker.conf' \
+                  ' and settings.py or that the env variables are set correctly!'
     else:
-        print 'failed loading settings. please check your vpn_checker.conf' \
-              ' and settings.py or that the env variables are set correctly!'
+        for arg in sys.argv:
+            if arg == '__main__.py':
+                pass
+
+            if arg == 'testmail':
+                l = Location('testlocation', '', 'remo@liebi.net')
+                pusher.send_mail(l, 'TestMail', 'TestMail')
