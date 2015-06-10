@@ -8,12 +8,13 @@ import sys
 from location import Location
 from measurement import ipsec_status, restart_ipsec
 from notifier import pusher
-from settings import PROWL_NOTIFY_API_KEYS, CHECK_INTERVAL
+from settings import PROWL_NOTIFY_API_KEYS, CHECK_INTERVAL, SENDGRID_API_KEY
 
 
 def check_settings():
     try:
         assert len(PROWL_NOTIFY_API_KEYS) > 0, "NO PROWL_NOTIFY_API_KEYS is set."
+        assert len(SENDGRID_API_KEY) > 0, "NO SENDGRID_API_KEY is set."
         return True
     except AssertionError as e:
         print e.message
